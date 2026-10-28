@@ -23,6 +23,7 @@ int get_procinfo(char *filename, ProcData *proc_data)
     proc_data->procstr[0] = '\0';
     proc_data->length = 0;
 
+    // Search for 
     while (fgets(buffer, capacity, fp) != NULL) {
         if (strncmp(buffer, "Mem", 3) == 0) {
             ret = snprintf(proc_data->procstr, capacity, "%s", buffer);
