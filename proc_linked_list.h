@@ -3,13 +3,22 @@
 
 #include <uuid/uuid.h>
 
-typedef struct
+typedef struct ProcNode
 {
-    ProcNode *data;
+    char *data;
+    uuid_t node_uuid[37];
     ProcNode *next;
-}ProcNode;
+} ProcNode;
+
+typedef struct ProcList
+{
+    ProcNode *head;
+    ProcNode *tail;
+    size_t size;
+} ProcList;
+
 
 ProcNode *proc_list_init();
-void proc_insert_list(ProcNode *proc_list);
+int proc_insert_list(ProcList *proc_list, void *data);
 
 #endif
