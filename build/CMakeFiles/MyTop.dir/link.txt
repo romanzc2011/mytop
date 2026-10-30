@@ -1,0 +1,1 @@
+/usr/bin/cc -Wl,--dependency-file=CMakeFiles/MyTop.dir/link.d CMakeFiles/MyTop.dir/mytop.c.o CMakeFiles/MyTop.dir/procinfo.c.o CMakeFiles/MyTop.dir/proc_linked_list.c.o -o MyTop  -lcurses /usr/lib64/libform.so /usr/lib64/libuuid.so

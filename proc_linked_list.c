@@ -1,7 +1,9 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <uuid/uuid.h>
+#include "procinfo.h"
 #include "proc_linked_list.h"
 
 // ---------------------------------------------------
@@ -33,34 +35,100 @@ ProcNode *proc_node_init()
 // ---------------------------------------------------
 int proc_insert_list(
     ProcList *proc_list,
-    void *data
+    ProcData *data
 )
 {
-    ProcNode *new_proc_node;
-
-    new_proc_node = malloc(sizeof(ProcNode));
-
-    if (new_proc_node == NULL) {
+    // Allocate memory for proc node
+    ProcNode *proc_node = malloc(sizeof(ProcNode));
+    ProcData *proc_data = malloc(sizeof(ProcData));
+    if (proc_node == NULL || proc_data == NULL) {
         perror("malloc");
         return EXIT_FAILURE;
     }
+    
+    // Create a uuid for the new node
+    uuid_generate(proc_node->node_uuid);
 
-    // Assign the new uuid
-    uuid_generate(new_proc_node->node_uuid);
-    new_proc_node->data = data;
-    new_proc_node->next = NULL;
-
-    // Perform on empty ProcList
+    // Determine if this is the first node
     if (proc_list->head == NULL) {
-        proc_list->head = new_proc_node;
-        proc_list->tail = new_proc_node;
-        proc_list->size++;
-        return EXIT_SUCCESS;
-    }
+        proc_list->head = proc_node;
+        proc_list->tail = proc_node;
 
-    if (new_proc_node->next == NULL) {
-        proc_list->tail->next = new_proc_node;
+        // tail points to a proc_node and set the next to null
+        proc_list->tail->next = NULL;
+        proc_node->data = data;
+        return EXIT_SUCCESS;
+    } else {
+        proc_list->tail = proc_node;
+        proc_node->next = NULL;
     }
 
     return EXIT_SUCCESS;
+}
+
+// ---------------------------------------------------
+// SEARCH PROC DATA
+// ---------------------------------------------------
+void search_proc_data(ProcList *proc_list, uuid_t node_uuid)
+{
+    // Find the data assigned to the node uuid param
+    ProcList *proc_list = NULL;
+    ProcNode *current_proc_node = NULL;
+    bool found_uuid = false;
+
+    uuid_t current_uuid[16] = {0};
+    current_proc_node = proc_list->head;
+    memset(current_uuid, current_proc_node->node_uuid, sizeof(current_uuid));
+
+    // Get current head data node uuid
+    while (!(found_uuid = uuid_compare(current_uuid, node_uuid))) {
+
+        /* Did we find the uuid? If not lets get the next uuid */
+        if (!found_uuid) {
+            // go to next node uuid
+            current_proc_node = proc_list->head->next;
+            memset(current_uuid, current_proc_node->node_uuid, sizeof(current_uuid));
+        }
+
+        if (found_uuid) {
+
+        }
+    }
+}
+
+// ---------------------------------------------------
+// PRINT PROC DATA
+// ---------------------------------------------------
+void print_proc_data(ProcNode *proc_node)
+{
+    printf("-------------------------------------------------------\n");
+    printf("UUID: %s\n", proc_node->node_uuid);
+    printf("PROCSTR: %s\n", proc)
+    printf("-------------------------------------------------------\n\n");
+
+}
+
+// ---------------------------------------------------
+// DESTROY PROC LIST
+// ---------------------------------------------------
+void destroy_proc_list(ProcList *proc_list)
+{
+    ProcNode *new_proc_list_head = NULL;
+    ProcData *proc_data = NULL;
+
+    /* Loop thru entire proc list, starting with procstr, free procstr
+        and continue free proc data then previous head after you assign new head 
+    */
+    while (proc_list->head != NULL) {
+        new_proc_list_head = proc_list->head->next;
+        
+        // procstr is in data, free this first
+        proc_data = proc_list->head->data;
+        free(proc_data->procstr);
+        free(proc_data);
+        free(proc_list->head->data);
+        free(proc_list->head);
+
+        proc_list->head = new_proc_list_head;
+    }
 }

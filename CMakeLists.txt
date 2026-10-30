@@ -1,29 +1,37 @@
 cmake_minimum_required(VERSION 3.23)
 
-project(MyTop LANGUAGE C)
-find_package(PkgConfig REQUIRED) 
+project(MyTop LANGUAGES C)
+
+# Find required libraries
+find_package(PkgConfig REQUIRED)
 pkg_check_modules(UUID REQUIRED IMPORTED_TARGET uuid)
 
 find_package(Curses REQUIRED)
 
-add_executable(MyTop)
-
-target_sources(MyTop
-    PRIVATE
-    main.c
+# Source files
+add_executable(MyTop
     mytop.c
-
-    PUBLIC
-        FILE_SET HEADERS
-        BASE_DIRS include
-        FILES include/procinfo.h
+    procinfo.c
+    proc_linked_list.c
 )
 
+# Header directories
+target_include_directories(MyTop
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CURSES_INCLUDE_DIRS}
+)
+
+# Link libraries
 target_link_libraries(MyTop
     PRIVATE
         PkgConfig::UUID
         ${CURSES_LIBRARIES}
 )
 
-target_include_directories(MyTop PRIVATE ${CURSES_INCLUDE_DIR})
-target_compile_options(MyTop PRIVATE -g -O0)
+# Debug compiler flags
+target_compile_options(MyTop
+    PRIVATE
+        -g
+        -O0
+)

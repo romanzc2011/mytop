@@ -4,12 +4,12 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-typedef struct 
+typedef struct ProcData
 {
     char *procstr;
     int length;
     size_t capacity;
-}ProcData;
+} ProcData;
 
 int get_procinfo(char *filename, ProcData *proc_data);
 static char *rammem_info(ProcData *proc_data);
