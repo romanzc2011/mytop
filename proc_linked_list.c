@@ -91,7 +91,7 @@ void search_proc_data(ProcList *proc_list, uuid_t node_uuid)
         }
 
         if (found_uuid) {
-
+            printf("FOUND THE UUID: %s\n", current_proc_node->node_uuid);
         }
     }
 }
@@ -103,9 +103,8 @@ void print_proc_data(ProcNode *proc_node)
 {
     printf("-------------------------------------------------------\n");
     printf("UUID: %s\n", proc_node->node_uuid);
-    printf("PROCSTR: %s\n", proc)
+    printf("PROCSTR: %s\n", proc_node->data->procstr);
     printf("-------------------------------------------------------\n\n");
-
 }
 
 // ---------------------------------------------------
