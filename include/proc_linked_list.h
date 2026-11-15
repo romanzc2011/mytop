@@ -29,7 +29,7 @@ typedef struct ProcList
 // SUBROUTINES
 // --------------------------------------------------
 ProcList *proc_list_init();
-int proc_insert_list(ProcList *proc_list, ProcData *data);
+uuid_t *proc_insert_list(ProcList *proc_list, ProcData *data);
 void search_proc_data(ProcList *proc_list, uuid_t node_uuid);
 void print_proc_data(ProcNode *proc_node);
 void destroy_proc_list(ProcList *proc_list);

@@ -27,13 +27,13 @@ ProcNode *proc_node_init()
     ProcNode *proc_node = malloc(sizeof(ProcNode));
     proc_node->data = NULL;
     proc_node->next = NULL;
-    memset(proc_node->node_uuid, 0, sizeof(proc_node->node_uuid));
+    memcpy(proc_node->node_uuid, 0, sizeof(proc_node->node_uuid));
 }
 
 // ---------------------------------------------------
 // PROC INSERT LIST
 // ---------------------------------------------------
-int proc_insert_list(
+uuid_t *proc_insert_list(
     ProcList *proc_list,
     ProcData *data
 )
@@ -41,6 +41,7 @@ int proc_insert_list(
     // Allocate memory for proc node
     ProcNode *proc_node = malloc(sizeof(ProcNode));
     ProcData *proc_data = malloc(sizeof(ProcData));
+    
     if (proc_node == NULL || proc_data == NULL) {
         perror("malloc");
         return EXIT_FAILURE;
@@ -72,26 +73,30 @@ int proc_insert_list(
 void search_proc_data(ProcList *proc_list, uuid_t node_uuid)
 {
     // Find the data assigned to the node uuid param
-    ProcList *proc_list = NULL;
     ProcNode *current_proc_node = NULL;
     bool found_uuid = false;
 
-    uuid_t current_uuid[16] = {0};
+    uuid_t current_uuid = {0};
+
+    // Starting at list head
     current_proc_node = proc_list->head;
-    memset(current_uuid, current_proc_node->node_uuid, sizeof(current_uuid));
+    memcpy(current_uuid, current_proc_node->node_uuid, sizeof(current_uuid));
 
     // Get current head data node uuid
-    while (!(found_uuid = uuid_compare(current_uuid, node_uuid))) {
+    while (!found_uuid) {// ------// ---------------------------------------------------
+// PROC NODE INIT
+// ------------------------------------------------------------------------------------------------
+// PROC NODE INIT
+// ---------------------------------------------------
+        // uuid compare rets 0 if same
+        int comp_uuid_ret = uuid_compare(current_uuid, node_uuid);
 
-        /* Did we find the uuid? If not lets get the next uuid */
-        if (!found_uuid) {
-            // go to next node uuid
-            current_proc_node = proc_list->head->next;
-            memset(current_uuid, current_proc_node->node_uuid, sizeof(current_uuid));
-        }
-
-        if (found_uuid) {
+        if (comp_uuid_ret == 0) {
+            found_uuid = true;
             printf("FOUND THE UUID: %s\n", current_proc_node->node_uuid);
+        } else {
+            found_uuid = false;
+            current_proc_node = current_proc_node->next;
         }
     }
 }
@@ -130,4 +135,12 @@ void destroy_proc_list(ProcList *proc_list)
 
         proc_list->head = new_proc_list_head;
     }
+}
+
+// ---------------------------------------------------
+// GET NODE UUID
+// ---------------------------------------------------
+uuid_t *get_node_uuid(ProcList *proc_list)
+{
+
 }

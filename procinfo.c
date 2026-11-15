@@ -38,14 +38,3 @@ int get_procinfo(char *filename, ProcData *proc_data)
 
     return 0;
 }
-
-static char *rammem_info(ProcData *proc_data)
-{
-    char *findstr = "Mem";
-    char *needle = strstr(proc_data->procstr, findstr);
-
-    if (needle) {
-        printf("FOUND: %s\n", needle);
-        return needle;
-    } 
-}
